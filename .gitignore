@@ -1,0 +1,8 @@
+assets/
+runtime/
+__pycache__/
+*.pyc
+dist/
+.superpowers/
+.pytest_cache/
+tools/denylist.txt

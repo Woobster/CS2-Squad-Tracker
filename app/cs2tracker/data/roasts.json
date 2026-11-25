@@ -1,0 +1,244 @@
+[
+ {
+  "id": 1,
+  "stat": "team_flashes",
+  "when": {
+   "op": ">=",
+   "value": 5
+  },
+  "trash": "{name} flashed his own team {n} times. At this point he's on their payroll.",
+  "friendly": "{name} flashed the team {n} times. Just wanted everyone to see the light."
+ },
+ {
+  "id": 2,
+  "stat": "buy_streak_n",
+  "when": {
+   "op": ">=",
+   "value": 5
+  },
+  "trash": "{name} bought a {weapon} {n} rounds in a row and called it a strategy.",
+  "friendly": "{name} bought a {weapon} {n} rounds in a row. Knows what they like."
+ },
+ {
+  "id": 3,
+  "stat": "nades_held_at_death",
+  "when": {
+   "op": ">=",
+   "value": 10
+  },
+  "trash": "{name} died with {n} grenades still in his pocket. Saving them for retirement.",
+  "friendly": "{name} died with {n} grenades never thrown. Saving the best for later."
+ },
+ {
+  "id": 4,
+  "stat": "fall_dmg",
+  "when": {
+   "op": ">=",
+   "value": 15
+  },
+  "trash": "{name} took {n} fall damage. The map wins again.",
+  "friendly": "{name} took {n} fall damage. Gravity says hi."
+ },
+ {
+  "id": 5,
+  "stat": "last_alive",
+  "when": {
+   "op": ">=",
+   "value": 5
+  },
+  "trash": "{name} was last alive {n} times and won {w}. Hide-and-seek champion.",
+  "friendly": "{name} was last alive {n} times and won {w}. Always the last one holding on."
+ },
+ {
+  "id": 6,
+  "stat": "hs_pct",
+  "when": {
+   "op": "<=",
+   "value": 20
+  },
+  "needs": [
+   {
+    "stat": "kills",
+    "op": ">=",
+    "value": 10
+   }
+  ],
+  "rate": true,
+  "trash": "{name}'s headshot rate was {p}%. \"Aim for the head\" was a suggestion, not a rule.",
+  "friendly": "{name}'s headshot rate was {p}%. The heads will still be there next time."
+ },
+ {
+  "id": 7,
+  "stat": "cost_per_kill",
+  "when": {
+   "op": ">=",
+   "value": 5000
+  },
+  "trash": "{name} spent ${money} and got {k} kills. That's ${per} per kill. Luxury.",
+  "friendly": "{name} spent ${money} and got {k} kills. That's ${per} per kill. Only the best."
+ },
+ {
+  "id": 8,
+  "stat": "nemesis_n",
+  "when": {
+   "op": ">=",
+   "value": 5
+  },
+  "trash": "{enemy} killed {name} {n} times. That's not a rival, that's a landlord.",
+  "friendly": "{enemy} killed {name} {n} times. Those two have a special bond now."
+ },
+ {
+  "id": 9,
+  "stat": "opening_deaths",
+  "when": {
+   "op": ">=",
+   "value": 4
+  },
+  "needs": [
+   {
+    "stat": "opening_duels",
+    "op": ">=",
+    "value": 5
+   },
+   {
+    "stat": "opening_death_pct",
+    "op": ">=",
+    "value": 60
+   }
+  ],
+  "trash": "{name} went in first {n} times and died first {d} of them. Brave. Wrong, but brave.",
+  "friendly": "{name} went in first {n} times and died first {d} of them. Fearless, at least."
+ },
+ {
+  "id": 10,
+  "stat": "clutches_tried",
+  "when": {
+   "op": ">=",
+   "value": 4
+  },
+  "needs": [
+   {
+    "stat": "clutch_win_pct",
+    "op": "<=",
+    "value": 25
+   }
+  ],
+  "trash": "{name} tried {n} clutches and won {w}. The \"one more round\" energy was real.",
+  "friendly": "{name} tried {n} clutches and won {w}. Never stopped believing, though."
+ },
+ {
+  "id": 11,
+  "stat": "wallbangs",
+  "when": {
+   "op": ">=",
+   "value": 3
+  },
+  "trash": "{name} got {n} wallbang kills. Walls fear him. Enemies don't.",
+  "friendly": "{name} got {n} wallbang kills. The walls are on their side, at least."
+ },
+ {
+  "id": 12,
+  "stat": "team_dmg",
+  "when": {
+   "op": ">=",
+   "value": 100
+  },
+  "trash": "{name} did {n} team damage. Friendly fire is not that friendly.",
+  "friendly": "{name} did {n} team damage. Just love taps, surely."
+ },
+ {
+  "id": 13,
+  "stat": "reload_deaths",
+  "when": {
+   "op": ">=",
+   "value": 2
+  },
+  "trash": "{name} died reloading {n} times. Bullets are a renewable resource, apparently.",
+  "friendly": "{name} died reloading {n} times. Always topping up, just in case."
+ },
+ {
+  "id": 14,
+  "stat": "kd",
+  "when": {
+   "op": "top",
+   "value": null
+  },
+  "needs": [
+   {
+    "stat": "played_share",
+    "op": "<=",
+    "value": 0.5
+   }
+  ],
+  "trash": "{name} played {p} of {t} matches and still topped the K/D. Imagine if he'd stayed.",
+  "friendly": "{name} played {p} of {t} matches and still topped the K/D. Imagine a full night of that."
+ },
+ {
+  "id": 15,
+  "stat": "smokes_thrown",
+  "when": {
+   "op": ">=",
+   "value": 15
+  },
+  "trash": "{name} threw {n} smokes. Visibility: optional.",
+  "friendly": "{name} threw {n} smokes. Cosy and foggy, just how they like it."
+ },
+ {
+  "id": 16,
+  "stat": "kd_side_gap",
+  "when": {
+   "op": ">=",
+   "value": 2
+  },
+  "trash": "{name} had a {kd1} K/D on CT and {kd2} on T. Two different players, one Steam account.",
+  "friendly": "{name} had a {kd1} K/D on CT and {kd2} on T. Two halves, two stories."
+ },
+ {
+  "id": 17,
+  "stat": "knife_kills",
+  "when": {
+   "op": ">=",
+   "value": 1
+  },
+  "trash": "{name} got a knife kill. Someone clip that and frame it.",
+  "friendly": "{name} got a knife kill. Highlight of the night, easily."
+ },
+ {
+  "id": 18,
+  "stat": "pistol_rounds_won",
+  "when": {
+   "op": ">=",
+   "value": 2
+  },
+  "trash": "The team won {n} pistol rounds and lost every eco after. Peak economy.",
+  "friendly": "The team won {n} pistol rounds and lost every eco after. Easy come, easy go."
+ },
+ {
+  "id": 19,
+  "stat": "accuracy",
+  "when": {
+   "op": "<=",
+   "value": 15
+  },
+  "needs": [
+   {
+    "stat": "shots",
+    "op": ">=",
+    "value": 100
+   }
+  ],
+  "rate": true,
+  "trash": "{name} hit {s}% of his shots. Stormtroopers are taking notes.",
+  "friendly": "{name} hit {s}% of their shots. Spreading the bullets around generously."
+ },
+ {
+  "id": 20,
+  "stat": "first_deaths",
+  "when": {
+   "op": ">=",
+   "value": 5
+  },
+  "trash": "{name} was the first to die in {n} rounds. Professional spectator.",
+  "friendly": "{name} was the first to die in {n} rounds. Great view from up there, though."
+ }
+]

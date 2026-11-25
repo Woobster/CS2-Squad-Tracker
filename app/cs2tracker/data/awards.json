@@ -1,0 +1,307 @@
+[
+ {
+  "id": "entry_king",
+  "title": "Entry King",
+  "kind": "skill",
+  "stat": "opening_kills",
+  "direction": "max",
+  "min": 3,
+  "rate": false,
+  "value_line": "{n} opening kills",
+  "blurb": "First through the door, round after round."
+ },
+ {
+  "id": "clutch_god",
+  "title": "Clutch God",
+  "kind": "skill",
+  "stat": "clutches_won",
+  "direction": "max",
+  "min": 1,
+  "rate": false,
+  "value_line": "{n} clutches won",
+  "value_line_one": "1 clutch won",
+  "blurb": "Last one standing, and still got it done."
+ },
+ {
+  "id": "flashbang_merchant",
+  "title": "Flashbang Merchant",
+  "kind": "skill",
+  "stat": "enemies_blinded",
+  "direction": "max",
+  "min": 5,
+  "rate": false,
+  "value_line": "{n} enemies blinded",
+  "blurb": "The other team saw a lot of white tonight."
+ },
+ {
+  "id": "trade_partner",
+  "title": "Trade Partner",
+  "kind": "skill",
+  "stat": "trade_kills",
+  "direction": "max",
+  "min": 3,
+  "rate": false,
+  "value_line": "{n} trade kills",
+  "blurb": "Always right behind you. Usually."
+ },
+ {
+  "id": "headhunter",
+  "title": "Headhunter",
+  "kind": "skill",
+  "stat": "hs_pct",
+  "direction": "max",
+  "min": 40,
+  "rate": true,
+  "value_line": "{n}% headshots",
+  "blurb": "Bodies are optional. Heads are not.",
+  "needs": [
+   {
+    "stat": "kills",
+    "op": ">=",
+    "value": 10
+   }
+  ]
+ },
+ {
+  "id": "through_the_wall",
+  "title": "Through the Wall",
+  "kind": "skill",
+  "stat": "wallbangs",
+  "direction": "max",
+  "min": 2,
+  "rate": false,
+  "value_line": "{n} wallbang kills",
+  "blurb": "Cover? Never heard of it."
+ },
+ {
+  "id": "smoke_criminal",
+  "title": "Smoke Criminal",
+  "kind": "skill",
+  "stat": "smoke_kills",
+  "direction": "max",
+  "min": 2,
+  "rate": false,
+  "value_line": "{n} kills through smoke",
+  "blurb": "Can't see them, still hits them. Suspicious."
+ },
+ {
+  "id": "blind_fury",
+  "title": "Blind Fury",
+  "kind": "skill",
+  "stat": "blind_kills",
+  "direction": "max",
+  "min": 1,
+  "rate": false,
+  "value_line": "{n} kills while blind",
+  "value_line_one": "1 kill while blind",
+  "blurb": "Flashed white and fragging anyway."
+ },
+ {
+  "id": "no_scope_no_hope",
+  "title": "No Scope No Hope",
+  "kind": "skill",
+  "stat": "noscope_kills",
+  "direction": "max",
+  "min": 1,
+  "rate": false,
+  "value_line": "{n} no-scope kills",
+  "value_line_one": "1 no-scope kill",
+  "blurb": "Who needs a scope anyway?"
+ },
+ {
+  "id": "demolition_expert",
+  "title": "Demolition Expert",
+  "kind": "skill",
+  "stat": "plants",
+  "direction": "max",
+  "min": 3,
+  "rate": false,
+  "value_line": "{n} bomb plants",
+  "blurb": "The bomb's favourite delivery driver."
+ },
+ {
+  "id": "ninja",
+  "title": "Ninja",
+  "kind": "skill",
+  "stat": "ninja_defuses",
+  "direction": "max",
+  "min": 1,
+  "rate": false,
+  "value_line": "{n} ninja defuses",
+  "value_line_one": "1 ninja defuse",
+  "blurb": "Defused it right under their noses."
+ },
+ {
+  "id": "pistol_pro",
+  "title": "Pistol Pro",
+  "kind": "skill",
+  "stat": "pistol_kills",
+  "direction": "max",
+  "min": 5,
+  "rate": false,
+  "value_line": "{n} pistol kills",
+  "blurb": "Doesn't need a rifle to ruin your round."
+ },
+ {
+  "id": "eco_warrior",
+  "title": "Eco Warrior",
+  "kind": "skill",
+  "stat": "eco_kills",
+  "direction": "max",
+  "min": 2,
+  "rate": false,
+  "value_line": "{n} eco-round kills",
+  "blurb": "Empty pockets, full kill feed."
+ },
+ {
+  "id": "survivor",
+  "title": "Survivor",
+  "kind": "skill",
+  "stat": "rounds_survived",
+  "direction": "max",
+  "min": 10,
+  "rate": false,
+  "value_line": "{n} rounds survived",
+  "blurb": "Still breathing when the round ends."
+ },
+ {
+  "id": "utility_king",
+  "title": "Utility King",
+  "kind": "skill",
+  "stat": "utility_dmg",
+  "direction": "max",
+  "min": 100,
+  "rate": false,
+  "value_line": "{n} utility damage",
+  "blurb": "Every grenade had someone's name on it."
+ },
+ {
+  "id": "zeus_god",
+  "title": "Zeus God",
+  "kind": "skill",
+  "stat": "zeus_kills",
+  "direction": "max",
+  "min": 1,
+  "rate": false,
+  "value_line": "{n} Zeus kills",
+  "value_line_one": "1 Zeus kill",
+  "blurb": "Shocking. Literally."
+ },
+ {
+  "id": "friendly_fire",
+  "title": "Friendly Fire",
+  "kind": "shame",
+  "stat": "team_flashes",
+  "direction": "max",
+  "min": 3,
+  "rate": false,
+  "value_line": "{n} team flashes",
+  "blurb": "The team is still seeing spots."
+ },
+ {
+  "id": "the_rat",
+  "title": "The Rat",
+  "kind": "shame",
+  "stat": "last_alive",
+  "direction": "max",
+  "min": 3,
+  "rate": false,
+  "value_line": "last alive {n} times",
+  "blurb": "Somewhere on B, waiting."
+ },
+ {
+  "id": "bank_robber",
+  "title": "Bank Robber",
+  "kind": "shame",
+  "stat": "nades_held_value",
+  "direction": "max",
+  "min": 1000,
+  "rate": false,
+  "value_line": "${n} wasted",
+  "blurb": "Died rich in grenades. Every time."
+ },
+ {
+  "id": "lemming",
+  "title": "Lemming",
+  "kind": "shame",
+  "stat": "fall_dmg",
+  "direction": "max",
+  "min": 10,
+  "rate": false,
+  "value_line": "{n} fall damage",
+  "blurb": "The ground wins again."
+ },
+ {
+  "id": "stormtrooper",
+  "title": "Stormtrooper",
+  "kind": "shame",
+  "stat": "accuracy",
+  "direction": "min",
+  "min": 25,
+  "rate": true,
+  "value_line": "{n}% accuracy",
+  "blurb": "Plenty of bullets. The walls took most of them.",
+  "needs": [
+   {
+    "stat": "shots",
+    "op": ">=",
+    "value": 100
+   }
+  ]
+ },
+ {
+  "id": "professional_spectator",
+  "title": "Professional Spectator",
+  "kind": "shame",
+  "stat": "first_deaths",
+  "direction": "max",
+  "min": 3,
+  "rate": false,
+  "value_line": "first to die {n} times",
+  "blurb": "Best seat in the house: the spectator cam."
+ },
+ {
+  "id": "donator",
+  "title": "Donator",
+  "kind": "shame",
+  "stat": "weapons_dropped_to_enemies",
+  "direction": "max",
+  "min": 2,
+  "rate": false,
+  "value_line": "{n} guns donated",
+  "blurb": "Generous with guns. To the wrong team."
+ },
+ {
+  "id": "reload_victim",
+  "title": "Reload Victim",
+  "kind": "shame",
+  "stat": "reload_deaths",
+  "direction": "max",
+  "min": 2,
+  "rate": false,
+  "value_line": "died reloading {n} times",
+  "blurb": "Topped up the mag at the worst possible moment."
+ },
+ {
+  "id": "tourist",
+  "title": "Tourist",
+  "kind": "shame",
+  "stat": "adr",
+  "direction": "min",
+  "min": 65,
+  "rate": true,
+  "value_line": "{n} ADR",
+  "blurb": "Here for the sights, not the damage."
+ },
+ {
+  "id": "taser_enjoyer",
+  "title": "Taser Enjoyer",
+  "kind": "shame",
+  "stat": "taser_buys",
+  "direction": "max",
+  "min": 2,
+  "rate": false,
+  "value_line": "{n} Zeus buys",
+  "blurb": "Bought a Zeus. Again. And again."
+ }
+]

@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CS2 Squad Tracker</title>
+<link rel="stylesheet" href="/static/style.css">
+<script type="module" src="/static/app.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#home"><span class="brand-mark" aria-hidden="true"><i></i><i></i></span>Squad Tracker</a>
+  <nav aria-label="Views" id="main-nav">
+    <a href="#home" data-view="home">Home</a>
+    <a href="#matches" data-view="matches">Matches</a>
+    <a href="#people" data-view="people">People</a>
+    <a href="#stats" data-view="stats">Stats</a>
+    <a href="#rivals" data-view="rivals">Rivals</a>
+    <a href="#summary" data-view="summary">Summary</a>
+    <a href="#settings" data-view="settings">Settings</a>
+  </nav>
+</header>
+
+<main>
+  <!-- Welcome (first start, until the Steam ID is known) -->
+  <section id="view-welcome" class="view" hidden>
+    <form class="panel welcome" id="welcome-form" autocomplete="off">
+      <h1>Welcome to CS2 Squad Tracker</h1>
+      <p class="hint">Stats, awards and roasts from your CS2 matches, for you and your friends.</p>
+      <div id="welcome-candidates" class="welcome-candidates" hidden>
+        <p>Which of these is you?</p>
+        <div class="row" id="welcome-candidate-list"></div>
+      </div>
+      <label>Your Steam ID or profile link
+        <input name="steam" id="welcome-steam" spellcheck="false" required
+               placeholder="steamcommunity.com/profiles/7656…">
+      </label>
+      <label id="welcome-key-row" hidden>Steam Web API key
+        <input name="api_key" id="welcome-key" type="password" spellcheck="false">
+        <span class="help">A profile-name link is looked up with your key. Get one at
+          <a href="https://steamcommunity.com/dev/apikey" target="_blank" rel="noopener">steamcommunity.com/dev/apikey</a>
+          (any domain name works, for example localhost) — or paste the 17-digit number instead.</span>
+      </label>
+      <details class="help"><summary>Where do I find this?</summary>
+        <p>On Steam, open your profile and copy the page address.</p></details>
+      <div class="row"><button type="submit" class="btn">Next</button>
+        <span class="status" id="welcome-status" role="status"></span></div>
+    </form>
+  </section>
+
+  <!-- Home -->
+  <section id="view-home" class="view" hidden>
+    <div id="home-reparse-banner"></div>
+    <div id="owner-notice" class="notice ok" hidden>
+      <p><span id="owner-notice-text"></span>
+        <button type="button" class="btn-quiet btn-small" id="owner-notice-close">OK</button></p>
+    </div>
+    <div id="older-card" class="notice ok" hidden>
+      <h3>Want your older matches too?</h3>
+      <p>Import your Steam match history so games together, K/D and win rates cover more than the matches played from now on.</p>
+      <div class="notice-actions">
+        <button type="button" class="btn btn-small" id="older-import">Import older matches</button>
+        <button type="button" class="btn-quiet btn-small" id="older-skip">Skip</button>
+      </div>
+    </div>
+    <div class="home-grid">
+      <div class="panel update-panel">
+        <h1>Get new matches</h1>
+        <p class="hint">Fetches your recent matches from Steam, downloads the demos and reads them.</p>
+        <button id="update-btn" class="btn-update" type="button">Update</button>
+        <div id="update-progress" class="progress" hidden>
+          <div class="progress-label" id="update-stage"></div>
+          <div class="progress-track"><div class="progress-fill" id="update-fill"></div></div>
+        </div>
+        <label id="drop-zone" class="drop-zone" tabindex="0">
+          <input id="file-input" type="file" multiple accept=".dem,.zip,.gz,.bz2">
+          <strong>Drop demo files here</strong>
+          <span>or click to pick .dem, .zip, .gz or .bz2 files</span>
+        </label>
+      </div>
+      <div class="panel" id="last-session">
+        <h2>Last session</h2>
+        <div class="body"><p class="muted">Loading…</p></div>
+      </div>
+    </div>
+    <div id="update-messages"></div>
+    <div id="import-report"></div>
+  </section>
+
+  <!-- Matches -->
+  <section id="view-matches" class="view" hidden>
+    <div class="view-head">
+      <h1>Matches</h1>
+      <form class="filters" id="match-filters">
+        <label>From <input type="date" name="since"></label>
+        <label>To <input type="date" name="until"></label>
+        <label>Group <select name="group"><option value="">All</option></select></label>
+        <label>Map <select name="map"><option value="">Any</option></select></label>
+        <button type="reset" class="btn-quiet">Clear</button>
+      </form>
+    </div>
+    <div class="panel flush"><table class="data matches-table" id="matches-table">
+      <thead><tr><th>Date</th><th>Map</th><th>Mode</th><th class="num">Score</th><th>Result</th><th>My people</th><th>Source</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </section>
+
+  <!-- People -->
+  <section id="view-people" class="view" hidden>
+    <div class="view-head">
+      <h1>People</h1>
+      <form class="filters" id="people-range">
+        <label>Stats from <input type="date" name="since"></label>
+        <label>to <input type="date" name="until"></label>
+        <button type="reset" class="btn-quiet">All time</button>
+      </form>
+    </div>
+    <div class="panel flush scroll-x"><table class="data people-table" id="people-table">
+      <thead><tr></tr></thead>
+      <tbody></tbody>
+    </table></div>
+    <form class="panel add-person" id="add-person">
+      <h2>Add a person</h2>
+      <label>Name <input name="name" required maxlength="80"></label>
+      <fieldset class="group-picks"><legend>Groups</legend><span class="checks" id="add-person-groups"></span></fieldset>
+      <label>Steam ID <input name="steam_id" inputmode="numeric" pattern="\d{17}" placeholder="17 digits, optional"></label>
+      <button type="submit" class="btn">Add person</button>
+      <button type="button" class="btn-quiet" id="add-group-btn" aria-expanded="false" aria-controls="add-group-form">Add group</button>
+    </form>
+    <form class="panel inline-form add-group" id="add-group-form" hidden>
+      <label>New group name <input name="name" required maxlength="40"></label>
+      <button type="submit" class="btn btn-small">Create group</button>
+      <button type="button" class="btn-quiet btn-small" id="add-group-cancel">Cancel</button>
+      <p class="status" id="add-group-status" role="status"></p>
+    </form>
+    <div class="panel" id="manage-groups">
+      <h2>Manage groups</h2>
+      <p class="hint">Deleting a group only removes it from people; nobody is deleted.</p>
+      <div class="body"></div>
+    </div>
+    <div class="panel" id="recurring">
+      <h2>Recurring teammates</h2>
+      <p class="hint">Players who were on your team in 3 or more matches but aren't one of your people yet.</p>
+      <div class="body"></div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section id="view-stats" class="view" hidden>
+    <div class="view-head"><h1>Stats</h1></div>
+    <div class="panel stats-panel">
+      <h2>Most played with (all time)</h2>
+      <p class="hint">Games on the same team as you, counting imported history and every match in the app.</p>
+      <div class="body"></div>
+    </div>
+  </section>
+
+  <!-- Rivals -->
+  <section id="view-rivals" class="view" hidden>
+    <div class="view-head">
+      <h1>Rivals</h1>
+      <div class="filters rivals-filters">
+        <div class="seg" role="group" aria-label="Show" id="rivals-filter">
+          <button type="button" class="seg-btn" data-filter="all" aria-pressed="true">All</button>
+          <button type="button" class="seg-btn" data-filter="with" aria-pressed="false">On my team</button>
+          <button type="button" class="seg-btn" data-filter="against" aria-pressed="false">Against me</button>
+          <button type="button" class="seg-btn" data-filter="both" aria-pressed="false">Both sides</button>
+        </div>
+        <label class="check"><input type="checkbox" id="rivals-tracked"> <span>Show my tracked friends</span></label>
+      </div>
+    </div>
+    <p class="hint" id="rivals-hint">Players you keep meeting, from your Steam history and demos.</p>
+    <div class="panel flush scroll-x"><table class="data rivals-table" id="rivals-table">
+      <thead><tr></tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </section>
+
+  <!-- Summary -->
+  <section id="view-summary" class="view" hidden>
+    <div class="view-head">
+      <h1>Session summary</h1>
+      <div class="summary-picks-head">
+        <label class="session-pick">Roast level <select id="roast-select"></select></label>
+        <label class="session-pick">Session <select id="session-select"></select></label>
+      </div>
+    </div>
+    <div class="summary-grid">
+      <div class="panel picks">
+        <div><h2>Matches</h2>
+        <div id="summary-matches" class="checklist"></div></div>
+        <div><h2>People</h2>
+        <div id="summary-people" class="checklist"></div></div>
+      </div>
+      <div class="summary-side">
+        <div id="summary-card" class="summary-card"></div>
+        <div class="actions">
+          <button type="button" class="btn" id="copy-text">Copy text</button>
+          <button type="button" class="btn btn-ct" id="save-image">Save image</button>
+          <span id="summary-status" class="status" role="status"></span>
+        </div>
+        <textarea id="summary-text" class="summary-text" readonly hidden aria-label="Summary text"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- Settings -->
+  <section id="view-settings" class="view" hidden>
+    <div class="view-head"><h1>Settings</h1></div>
+    <div id="settings-reparse-banner"></div>
+    <form class="panel settings-form" id="settings-form">
+      <label>My Steam ID <input name="me_steam_id" inputmode="numeric" pattern="\d{17}" required></label>
+      <label>Replays folder <span class="input-row"><input name="replays_dir" required><button type="button" class="btn-quiet btn-small" id="detect-replays-btn" title="Find CS2's replays folder through Steam">Detect</button></span></label>
+      <div class="row"><button type="submit" class="btn">Save settings</button><span class="status" id="settings-status" role="status"></span></div>
+    </form>
+    <div id="onboarding-banner" class="notice warn" hidden>
+      <p>To fetch your matches automatically, add these three from Steam: Web API key, authentication code, and your most recent match's sharing code (shown on the same Steam page as the code).</p>
+      <div class="notice-actions"><button type="button" class="btn-quiet btn-small" id="onboarding-skip">Skip for now</button></div>
+    </div>
+    <form class="panel settings-form" id="history-form" autocomplete="off">
+      <h2>Match history access</h2>
+      <p class="hint">With these, Update fetches every match you play — not only the last 8. They stay on this computer.</p>
+      <label>Steam Web API key
+        <input name="steam_api_key" type="password" spellcheck="false">
+        <span class="help">Get one at <a href="https://steamcommunity.com/dev/apikey" target="_blank" rel="noopener">steamcommunity.com/dev/apikey</a> — any domain name works, for example localhost.</span>
+        <span class="saved-secret" id="steam_api_key-saved" hidden></span>
+      </label>
+      <label>Match history authentication code
+        <input name="match_auth_code" type="password" spellcheck="false" placeholder="AAAA-AAAAA-AAAA">
+        <span class="help">On <a href="https://help.steampowered.com/en/wizard/HelpWithGameIssue/?appid=730&amp;issueid=128" target="_blank" rel="noopener">Steam's CS2 personal data page</a>, open "Access to Your Match History" and create the code.</span>
+        <span class="saved-secret" id="match_auth_code-saved" hidden></span>
+      </label>
+      <label>A match sharing code
+        <input name="start_share_code" spellcheck="false" placeholder="CSGO-xxxxx-xxxxx-xxxxx-xxxxx-xxxxx">
+        <span class="help">New here? Copy your most recent match's code from the same Steam page as the authentication code. If the app already has your recent matches, leave it empty — or paste an older code to go further back; Update imports that match and every one after it.</span>
+        <span class="saved-secret" id="last-share-code" hidden></span>
+      </label>
+      <div class="row">
+        <button type="submit" class="btn">Save</button>
+        <button type="button" class="btn-quiet" id="test-history-btn">Test</button>
+        <span class="status" id="history-status" role="status"></span>
+      </div>
+      <p class="hint" id="pending-count">Pending matches: 0</p>
+    </form>
+    <div class="panel settings-form" id="demos-box">
+      <h2>Demos</h2>
+      <label>Delete demos after they're read
+        <select name="demo_retention_days" id="retention-select">
+          <option value="">Never</option>
+          <option value="7">after 7 days</option>
+          <option value="30">after 30 days</option>
+          <option value="90">after 90 days</option>
+        </select>
+        <span class="help">The stats and the small event file of each match are kept, so the match stays complete in the app.</span>
+      </label>
+      <p id="disk-summary">Demos on disk: …</p>
+      <label class="check"><input type="checkbox" id="auto-update-check"> <span>Update automatically</span></label>
+      <p class="help">When the page opens (if the last Update was over 30 minutes ago) and every 2 hours while it's open.</p>
+      <p class="status" id="demos-status" role="status"></p>
+    </div>
+    <form class="panel settings-form" id="steam-import-form">
+      <h2>Import Steam match history</h2>
+      <p class="hint">Open Steam → your profile → Games → Counter-Strike 2 → Personal Game Data → Ranked Competitive Matches (and Premier Matches), press “Load more history” until it stops, then save the page (Ctrl+S) — or use an exported .json file.</p>
+      <div class="row">
+        <input type="file" id="steam-import-file" name="file" accept=".json,.html,.htm" aria-label="Steam match history file">
+        <button type="submit" class="btn" id="steam-import-btn">Import</button>
+      </div>
+      <div id="steam-import-progress" class="progress" hidden>
+        <div class="progress-label" id="steam-import-stage"></div>
+        <div class="progress-track"><div class="progress-fill" id="steam-import-fill"></div></div>
+      </div>
+      <p class="status" id="steam-import-status" role="status"></p>
+    </form>
+    <div class="panel settings-form" id="rivals-box">
+      <h2>Rivals</h2>
+      <label>Rivals: minimum games
+        <input type="number" id="rivals-min-input" name="rivals_min_games" min="2" max="10" step="1" inputmode="numeric">
+        <span class="help">A player shows on the Rivals tab once you've met them in this many matches (2–10).</span>
+      </label>
+      <p class="status" id="rivals-min-status" role="status"></p>
+    </div>
+    <div class="panel settings-info">
+      <dl>
+        <dt>Data folder</dt><dd id="about-data-dir" class="path">…</dd>
+        <dt>Demo parser</dt><dd id="about-parser">…</dd>
+        <dt>App version</dt><dd id="about-app">…</dd>
+      </dl>
+    </div>
+    <div class="panel settings-actions">
+      <div>
+        <h2>Back up</h2>
+        <p class="hint">Saves a copy of the database in the backups folder.</p>
+        <button type="button" class="btn" id="backup-btn">Back up now</button>
+        <p class="status" id="backup-status" role="status"></p>
+      </div>
+      <div>
+        <h2>Re-read all demos</h2>
+        <p class="hint">Reads every stored demo again with the current parser. Ratings from imported history are kept.</p>
+        <button type="button" class="btn" id="reparse-btn">Re-read all demos</button>
+        <div id="reparse-progress" class="progress" hidden>
+          <div class="progress-label" id="reparse-stage"></div>
+          <div class="progress-track"><div class="progress-fill" id="reparse-fill"></div></div>
+        </div>
+        <p class="status" id="reparse-status" role="status"></p>
+      </div>
+    </div>
+  </section>
+</main>
+<div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>
