@@ -21,6 +21,11 @@ from typing import Callable
 from cs2tracker import db, records
 
 NOT_STEAM = "That file isn't a Steam match history export or page."
+EMPTY_PAGE = ("This page was saved before any matches were loaded. Press 'Load more history' "
+              "until it stops, then save with 'Webpage, Complete'.")
+# Class of the table that holds the matches on Steam's Personal Game Data page. It is there
+# even in a page saved before any matches were loaded (they arrive later through JavaScript).
+PAGE_MARKER = "csgo_scoreboard_root"
 # The Steam tabs we import (`matchhistorycompetitivepermap`, `matchhistorypremier`), by the
 # mode Steam writes, and what match.game_mode stores for them. Other modes are skipped.
 GAME_MODES = {"Competitive": "competitive", "Premier": "premier"}
@@ -300,7 +305,8 @@ def _parse_html(text: str) -> list[SteamMatch]:
             if sc:
                 score = _score(sc[0].text())
                 teams.append([])
-            elif r.find_all(lambda n: n.has_class("inner_name")):
+            elif r.find_all(lambda n: n.tag == "td" and n.has_class("inner_name")):
+                # the header row ("Player Name", "Ping", ...) uses <th class="inner_name">
                 teams[-1].append(_html_player(r))
         if score is None or len(teams) != 2:
             raise ValueError(NOT_STEAM)
@@ -312,7 +318,8 @@ def _parse_html(text: str) -> list[SteamMatch]:
 
 def parse(data: bytes, filename: str = "") -> list[SteamMatch]:
     """Parse a Steam history JSON export (format 1) or a saved Personal Game Data page,
-    told apart by content (the filename is not trusted). Anything else: ValueError(NOT_STEAM)."""
+    told apart by content (the filename is not trusted). Steam's page with no matches in it:
+    ValueError(EMPTY_PAGE); anything else: ValueError(NOT_STEAM)."""
     text = data.decode("utf-8", errors="replace").lstrip("\ufeff")
     head = text.lstrip()
     try:
@@ -322,6 +329,8 @@ def parse(data: bytes, filename: str = "") -> list[SteamMatch]:
             return _parse_html(text)
     except (ValueError, KeyError, TypeError, IndexError, StopIteration, AttributeError):
         raise ValueError(NOT_STEAM) from None
+    if PAGE_MARKER in text:  # Steam's page, but saved with no matches in it
+        raise ValueError(EMPTY_PAGE)
     raise ValueError(NOT_STEAM)
 
 

@@ -81,8 +81,9 @@ You can add your whole match history from Steam, not only recent matches.
 1. In Steam open your profile, then Games, then Counter-Strike 2, then
    Personal Game Data.
 2. Open "Ranked Competitive Matches". Press "Load more history" until it
-   stops. Then save the page: Ctrl+S, and choose "Webpage, Complete" or
-   "HTML only".
+   stops. Then save the page: Ctrl+S, and choose "Webpage, Complete".
+   (Not "HTML only": that saves the page as it was before the matches
+   loaded, so the file has no matches in it.)
 3. Do the same for "Premier Matches".
 4. In the tracker open Settings, then "Import Steam match history", and
    choose each saved file.
