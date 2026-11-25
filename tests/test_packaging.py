@@ -73,18 +73,18 @@ def test_denylist_is_optional(tmp_path):
 
 def test_readme_texts():
     text = (ROOT / "README.txt").read_text(encoding="utf-8")
-    assert "FIRST START" in text and "WHAT'S NEW IN V1.3.1" in text
+    assert "FIRST START" in text and "WHAT'S NEW IN V1.3.2" in text
 
 
 def test_version():
     from cs2tracker.app import APP_VERSION
-    assert APP_VERSION == "1.3.1"
+    assert APP_VERSION == "1.3.2"
 
 
 @pytest.mark.skipif(not (ROOT / "assets/wheels").is_dir(), reason="assets/ not present")
 def test_build_real_repo(tmp_path):
     out = build_zip.build(ROOT, tmp_path)
-    assert out.name == "CS2SquadTracker-v1.3.1.zip"
+    assert out.name == "CS2SquadTracker-v1.3.2.zip"
     names = zipfile.ZipFile(out).namelist()
     assert "CS2 Squad Tracker/Start.bat" in names
     assert "CS2 Squad Tracker/app/cs2tracker/static/welcome.js" in names
@@ -101,4 +101,4 @@ def test_build_refuses_personal_data(tmp_path, monkeypatch):
     with pytest.raises(SystemExit) as e:
         build_zip.build(repo, tmp_path / "out", denylist=DENY)
     assert "x.py" in str(e.value)
-    assert not (tmp_path / "out" / "CS2SquadTracker-v1.3.1.zip").exists()
+    assert not (tmp_path / "out" / "CS2SquadTracker-v1.3.2.zip").exists()
