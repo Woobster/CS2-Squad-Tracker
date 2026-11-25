@@ -26,7 +26,7 @@ from cs2tracker.funstats import FUN_FORMAT
 from cs2tracker.jobs import Job, JobRunner
 from cs2tracker.serialize import jsonable
 
-APP_VERSION = "1.3.1"
+APP_VERSION = "1.3.2"
 STATIC = Path(__file__).resolve().parent / "static"
 ALLOWED_SUFFIXES = (".dem", ".zip", ".gz", ".bz2")
 BUSY = "Busy importing — try again when the current job finishes."

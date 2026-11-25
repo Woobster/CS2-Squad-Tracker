@@ -33,6 +33,14 @@ After that, the more you play with the tracker running, the more it
 knows: every new match is fetched and read automatically.
 
 
+WHAT'S NEW IN V1.3.2
+--------------------
+- Fixed: importing a saved Steam match history page always failed with
+  "That file isn't a Steam match history export or page." It works now.
+- A page saved without its matches (with "HTML only") now tells you how
+  to save it properly. See "STEAM MATCH HISTORY" below.
+
+
 WHAT'S NEW IN V1.3.1
 --------------------
 - Ready to share: the download no longer contains anyone's data.
@@ -47,7 +55,7 @@ WHAT'S NEW IN V1.3
 - Steam match history import (Competitive and Premier): adds your whole
   history. See "STEAM MATCH HISTORY" below.
 - Awards of the night and Roast of the night on the Summary. You choose
-  the roast level in Settings: trash talk, friendly or off.
+  the roast level on the Summary page: trash talk, friendly or off.
 - A bigger scoreboard: HS%, KAST, opening duels, clutches, rating and role.
 - Records and milestones.
 - A Rivals tab: the players you keep meeting, with you or against you.
