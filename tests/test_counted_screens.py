@@ -90,3 +90,15 @@ def test_rivals_ignore_uncounted(world):
     keys = {r["key"]: r for r in rivals.list(conn, ME, 1)}
     assert f"account:{STRANGER_W}" not in keys
     assert keys[f"account:{STRANGER_A}"]["total"] == 1
+
+
+def test_matches_list_counted_and_mode(world, make_app):
+    conn, w = world
+    conn.close()
+    client = make_app()
+    ids = lambda q="": [m["id"] for m in client.get(f"/api/matches{q}").json()]   # noqa: E731
+    assert sorted(ids()) == sorted([w["A"], w["B"], w["U"]])
+    assert sorted(ids("?mode=premier")) == sorted([w["A"], w["B"]])
+    assert ids("?mode=competitive") == []
+    assert client.get("/api/matches?mode=wingman").status_code == 422
+    assert client.get(f"/api/matches/{w['W']}").status_code == 200

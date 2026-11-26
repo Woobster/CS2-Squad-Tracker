@@ -524,7 +524,7 @@ let quietReset = false;
 function matchFilters() {
   const f = new FormData($("#match-filters"));
   const q = new URLSearchParams();
-  for (const k of ["since", "until", "group", "map"]) if (f.get(k)) q.set(k, f.get(k));
+  for (const k of ["since", "until", "group", "map", "mode"]) if (f.get(k)) q.set(k, f.get(k));
   return q;
 }
 
@@ -567,7 +567,7 @@ async function renderMatches(openId) {
         h("small", { title: m.start_estimated ? "Start time unknown — date estimated" : null },
           m.start_estimated ? "≈" : fmtTime(m.started_at, false))),
       h("td", {}, h("span.mapname", {}, mapName(m.map))),
-      h("td", {}, modeTag(gameModeOf(m)) || m.mode || "–"),
+      h("td", {}, modeTag(gameModeOf(m)) || m.mode || "5v5 (mode not known yet)"),
       h("td.num", {}, scoreText(m)),
       h("td", {}, resultBadge(m.result)),
       h("td.people-cell", {}, m.people.join(", ") || "–"),
@@ -677,7 +677,21 @@ function deleteMatchControls(m) {
 function initMatches() {
   const form = $("#match-filters");
   form.addEventListener("change", () => renderMatches());
-  form.addEventListener("reset", () => { if (!quietReset) setTimeout(() => renderMatches(), 0); });
+  const seg = $("#matches-mode");
+  const pressMode = (mode) => {
+    for (const b of seg.querySelectorAll("button[data-mode]")) b.setAttribute("aria-pressed", String(b.dataset.mode === mode));
+  };
+  seg.addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-mode]");
+    if (!b) return;
+    form.elements.mode.value = b.dataset.mode;
+    pressMode(b.dataset.mode);
+    renderMatches();
+  });
+  form.addEventListener("reset", () => {
+    pressMode("");
+    if (!quietReset) setTimeout(() => renderMatches(), 0);
+  });
   form.addEventListener("submit", (e) => e.preventDefault());
 }
 

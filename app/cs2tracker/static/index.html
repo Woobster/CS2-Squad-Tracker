@@ -96,6 +96,12 @@
         <label>To <input type="date" name="until"></label>
         <label>Group <select name="group"><option value="">All</option></select></label>
         <label>Map <select name="map"><option value="">Any</option></select></label>
+        <div class="seg" role="group" aria-label="Mode" id="matches-mode">
+          <button type="button" class="seg-btn" data-mode="" aria-pressed="true">All</button>
+          <button type="button" class="seg-btn" data-mode="competitive" aria-pressed="false">Competitive</button>
+          <button type="button" class="seg-btn" data-mode="premier" aria-pressed="false">Premier</button>
+        </div>
+        <input type="hidden" name="mode" value="">
         <button type="reset" class="btn-quiet">Clear</button>
       </form>
     </div>

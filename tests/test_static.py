@@ -58,3 +58,12 @@ def test_no_html_injection(name):
 def test_node_check(name):
     r = subprocess.run(["node", "--check", str(STATIC / name)], capture_output=True, text=True)
     assert r.returncode == 0, r.stderr
+
+
+def test_matches_mode_switch():
+    assert 'id="matches-mode"' in HTML and '<input type="hidden" name="mode"' in HTML
+    for mode, label in (("", "All"), ("competitive", "Competitive"), ("premier", "Premier")):
+        assert f'data-mode="{mode}"' in HTML and f">{label}</button>" in HTML
+    src = js("app.js")
+    assert '"since", "until", "group", "map", "mode"' in src
+    assert "5v5 (mode not known yet)" in src
