@@ -8,7 +8,7 @@ from pathlib import Path
 from cs2tracker.demo import KillRow, MultiKill, PlayerLine, RoundRow
 
 SCHEMA_PATH = Path(__file__).with_name("schema.sql")
-USER_VERSION = 4
+USER_VERSION = 5
 DEFAULT_GROUPS: tuple[str, ...] = ()  # none: users make their own groups
 LEETIFY_CUTOFF_DEFAULT = "2026-11-23T08:00:00+00:00"
 GROUP_NAME_MAX = 40
@@ -219,6 +219,41 @@ def _migrate_3_to_4(conn: sqlite3.Connection) -> None:
             conn.execute("PRAGMA foreign_keys=ON")
 
 
+# Which matches count anywhere in the app's stats: Competitive, Premier and FACEIT
+# (spec 2026-11-26-counted-modes). Import and housekeeping queries ignore this.
+COUNTED_GAME_MODES = ("competitive", "premier")
+COUNTED_MODE_TEXTS = ("competitive", "premier", "matchmaking", "faceit")
+COUNTED_SQL = "SELECT id FROM counted_match"
+_COUNTED_VIEW = f"""CREATE VIEW IF NOT EXISTS counted_match AS
+SELECT m.id FROM match m WHERE CASE
+  WHEN m.game_mode IS NOT NULL THEN m.game_mode IN ({",".join(repr(x) for x in COUNTED_GAME_MODES)})
+  WHEN TRIM(COALESCE(m.mode, '')) <> ''
+    THEN LOWER(TRIM(m.mode)) IN ({",".join(repr(x) for x in COUNTED_MODE_TEXTS)})
+  ELSE (SELECT CASE WHEN COALESCE(SUM(team = 'enemy'), 0) = 0 THEN 1
+               ELSE SUM(team = 'mine') BETWEEN 4 AND 5 AND SUM(team = 'enemy') BETWEEN 4 AND 5 END
+        FROM match_player mp WHERE mp.match_id = m.id)
+END"""
+
+
+def counted(conn: sqlite3.Connection, match_id: int) -> bool:
+    """True when the match counts in stats (Competitive / Premier / FACEIT or unknown 5v5)."""
+    return conn.execute("SELECT 1 FROM counted_match WHERE id=?", (match_id,)).fetchone() is not None
+
+
+def _migrate_4_to_5(conn: sqlite3.Connection) -> None:
+    """v4 -> v5: the counted_match view, then rebuild records so other modes' records go."""
+    from cs2tracker import records  # records imports db
+    try:
+        conn.execute(_COUNTED_VIEW)
+        conn.execute("PRAGMA user_version=5")
+        conn.commit()
+    except BaseException:
+        conn.rollback()
+        raise
+    records.rebuild(conn)
+    conn.commit()
+
+
 def migrate(conn: sqlite3.Connection, backups_dir: Path | None = None) -> None:
     """Bring the database to USER_VERSION. 0 = new database; refuse versions we don't know."""
     version = conn.execute("PRAGMA user_version").fetchone()[0]
@@ -240,6 +275,10 @@ def migrate(conn: sqlite3.Connection, backups_dir: Path | None = None) -> None:
         backup(conn, backups_dir, prefix="cs2tracker-pre-v4")  # existing data: back up before the v4 step
     if version < 4:
         _migrate_3_to_4(conn)
+    if 0 < version < 5 and backups_dir is not None:
+        backup(conn, backups_dir, prefix="cs2tracker-pre-v5")  # existing data: back up before the v5 step
+    if version < 5:
+        _migrate_4_to_5(conn)
 
 
 def connect(path: Path | str, backups_dir: Path | None = None) -> sqlite3.Connection:
