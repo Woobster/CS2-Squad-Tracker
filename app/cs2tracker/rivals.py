@@ -60,7 +60,8 @@ WITH mine(sid) AS (
     SELECT :me UNION
     SELECT steam_id FROM account WHERE person_id IS NOT NULL
       AND person_id = (SELECT person_id FROM account WHERE steam_id = :me)),
-full(match_id) AS (SELECT DISTINCT match_id FROM match_player WHERE team = 'enemy')
+full(match_id) AS (SELECT DISTINCT match_id FROM match_player WHERE team = 'enemy'
+                   AND match_id IN (SELECT id FROM counted_match))
 SELECT CASE WHEN a.person_id IS NOT NULL THEN 'person:' || a.person_id
             ELSE 'account:' || mp.steam_id END AS k,
        mp.steam_id, mp.match_id, mp.team, m.result, m.started_at,
@@ -172,7 +173,7 @@ def detail(conn, me: str, key: str) -> dict:
             "FROM match_player mp JOIN match m ON m.id=mp.match_id "
             "LEFT JOIN account a ON a.steam_id=mp.steam_id "
             f"WHERE mp.steam_id IN ({_ph(len(sids))}) AND EXISTS (SELECT 1 FROM match_player e "
-            "WHERE e.match_id=m.id AND e.team='enemy') "
+            "WHERE e.match_id=m.id AND e.team='enemy') AND m.id IN (SELECT id FROM counted_match) "
             "ORDER BY m.started_at IS NULL, m.started_at DESC, m.id DESC",
             (*mine, me, *mine, me, *mine, me, *sids)).fetchall()
         for mid, started, mp, res, team, k, d, a, nm, mk, md, ma in rows:

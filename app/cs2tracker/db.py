@@ -208,6 +208,7 @@ def _migrate_3_to_4(conn: sqlite3.Connection) -> None:
             # fill the new record table from the existing matches (records imports db: a
             # call-time import avoids the cycle)
             from cs2tracker import records
+            conn.execute(_COUNTED_VIEW)   # records now read it (v5 keeps it)
             records.rebuild(conn)
             conn.execute("PRAGMA user_version=4")
             conn.commit()

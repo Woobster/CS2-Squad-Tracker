@@ -80,7 +80,7 @@ def person_stats(conn, person_ids: list[int] | None = None, match_ids: list[int]
     ordered by kills descending then name. since/until compare the UTC date of
     started_at (inclusive); matches without a start are excluded when either is set.
     """
-    where = ["mp.team='mine'", "a.person_id IS NOT NULL"]
+    where = ["mp.team='mine'", "a.person_id IS NOT NULL", "m.id IN (SELECT id FROM counted_match)"]
     args: list = []
     if person_ids is not None:
         where.append(f"a.person_id IN ({_ph(len(person_ids))})")
@@ -154,7 +154,8 @@ def _fav_weapons(conn, pids, match_ids, since, until) -> dict[int, tuple[str, in
     if not pids:
         return {}
     where = ["mp.team='mine'", f"a.person_id IN ({_ph(len(pids))})", "k.team_kill=0",
-             "k.attacker_steam_id IS NOT NULL", "k.attacker_steam_id != k.victim_steam_id"]
+             "k.attacker_steam_id IS NOT NULL", "k.attacker_steam_id != k.victim_steam_id",
+             "m.id IN (SELECT id FROM counted_match)"]
     args: list = list(pids)
     if match_ids is not None:
         where.append(f"k.match_id IN ({_ph(len(match_ids))})")
@@ -187,7 +188,8 @@ def sessions(conn, gap_hours: float = 2) -> list[list[int]]:
     matches form one session per UTC calendar date and never merge with exact ones.
     """
     rows = conn.execute("SELECT id, started_at, start_estimated FROM match "
-                        "WHERE started_at IS NOT NULL ORDER BY started_at, id").fetchall()
+                        "WHERE started_at IS NOT NULL AND id IN (SELECT id FROM counted_match) "
+                        "ORDER BY started_at, id").fetchall()
     gap = timedelta(hours=gap_hours)
     groups: list[tuple[datetime, list[int]]] = []   # (latest start, ids)
     est: dict[str, list] = {}
@@ -231,6 +233,7 @@ def recurring_teammates(conn, me: str, min_matches: int = 3) -> list[dict]:
         "SELECT a.steam_id, a.last_seen_name, COUNT(DISTINCT mp.match_id) c "
         "FROM match_player mp JOIN account a ON a.steam_id=mp.steam_id "
         "WHERE mp.team='mine' AND a.person_id IS NULL AND a.steam_id != ? "
+        "AND mp.match_id IN (SELECT id FROM counted_match) "
         "GROUP BY a.steam_id HAVING c >= ? ORDER BY c DESC, a.steam_id", (me, min_matches))
     return [{"steam_id": s, "name": n, "count": c} for s, n, c in rows]
 
@@ -263,7 +266,7 @@ def games_together(conn, me: str | None = None) -> dict[int, int]:
     for pid, _mid, started in conn.execute(
             "SELECT DISTINCT a.person_id, m.id, m.started_at FROM match_player mp "
             "JOIN account a ON a.steam_id=mp.steam_id JOIN match m ON m.id=mp.match_id "
-            "WHERE mp.team='mine' AND a.person_id IS NOT NULL"):
+            "WHERE mp.team='mine' AND a.person_id IS NOT NULL AND m.id IN (SELECT id FROM counted_match)"):
         if pid not in out:
             continue
         app_games[pid] += 1
@@ -538,6 +541,8 @@ def summary(conn, match_ids: list[int], person_ids: list[int],
     if roast_level not in ROAST_LEVELS:
         raise ValueError(f"roast_level must be one of {', '.join(ROAST_LEVELS)}")
     from cs2tracker import awards, records, rivals, roasts   # roasts imports this module
+    counted = {r[0] for r in conn.execute("SELECT id FROM counted_match")}
+    match_ids = [i for i in match_ids if i in counted]   # other modes never count
     ids = sorted(dict.fromkeys(match_ids), key=lambda i: (conn.execute(
         "SELECT COALESCE(started_at,'') FROM match WHERE id=?", (i,)).fetchone()[0], i))
     person_ids = list(dict.fromkeys(person_ids))

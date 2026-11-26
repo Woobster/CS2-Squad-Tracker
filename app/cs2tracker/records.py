@@ -167,7 +167,7 @@ class _Data:
         self.matches = {}
         for mid, started, mp, dur, res, my_s, en_s in conn.execute(
                 "SELECT id, started_at, map, duration, result, my_team_score, enemy_score "
-                "FROM match"):
+                "FROM match WHERE id IN (SELECT id FROM counted_match)"):
             if before is not None and (started is None or started >= before):
                 continue
             self.matches[mid] = (started, mp, dur, res, my_s, en_s)
