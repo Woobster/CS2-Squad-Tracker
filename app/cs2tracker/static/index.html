@@ -15,6 +15,7 @@
     <a href="#matches" data-view="matches">Matches</a>
     <a href="#people" data-view="people">People</a>
     <a href="#stats" data-view="stats">Stats</a>
+    <a href="#dashboard" data-view="dashboard">Dashboard</a>
     <a href="#rivals" data-view="rivals">Rivals</a>
     <a href="#summary" data-view="summary">Summary</a>
     <a href="#settings" data-view="settings">Settings</a>
@@ -159,6 +160,24 @@
       <p class="hint">Games on the same team as you, counting imported history and every match in the app.</p>
       <div class="body"></div>
     </div>
+  </section>
+
+  <!-- Dashboard (v1.3.3): the app owner's stats -->
+  <section id="view-dashboard" class="view" hidden>
+    <div class="view-head">
+      <h1>Dashboard<small id="dash-sub"></small></h1>
+      <div class="filters dash-filters">
+        <label>Mode <select id="dash-f-mode"></select></label>
+        <label>Period <select id="dash-f-period">
+          <option value="all">All time</option><option value="365">Last 12 months</option><option value="180">Last 6 months</option>
+          <option value="90">Last 90 days</option><option value="30">Last 30 days</option>
+          <option value="n100">Last 100 matches</option><option value="n50">Last 50 matches</option></select></label>
+        <label>Map <select id="dash-f-map"></select></label>
+        <label>Rolling average over <input type="number" id="dash-f-roll" value="20" min="5" max="100"> matches</label>
+      </div>
+    </div>
+    <div id="dash-main" class="dash-grid"></div>
+    <div id="dash-tip" role="tooltip"></div>
   </section>
 
   <!-- Rivals -->

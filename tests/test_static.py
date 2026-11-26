@@ -67,3 +67,38 @@ def test_matches_mode_switch():
     src = js("app.js")
     assert '"since", "until", "group", "map", "mode"' in src
     assert "5v5 (mode not known yet)" in src
+
+
+def test_dashboard_assets():
+    assert '<a href="#dashboard" data-view="dashboard">Dashboard</a>' in HTML
+    assert HTML.index('data-view="stats"') < HTML.index('data-view="dashboard"') < HTML.index('data-view="rivals"')
+    assert 'id="view-dashboard"' in HTML and 'id="dash-main"' in HTML
+    src = js("dashboard.js")
+    assert "/api/dashboard" in src
+    for gone in ("localStorage", "parseSteam", "DOMParser", "76561", "ping", "Ping", "embedded"):
+        assert gone not in src, gone
+    app = js("app.js")
+    assert 'import { initDashboard, renderDashboard } from "/static/dashboard.js";' in app
+    assert "dashboard: () => renderDashboard()," in app and "initDashboard();" in app
+    assert "#view-dashboard" in (STATIC / "style.css").read_text(encoding="utf-8")
+
+
+def test_dashboard_fits_the_app():
+    src = js("dashboard.js")
+    assert 'class="res-' not in src and 'class="dres-${' in src        # app's .res-W is a filled badge
+    assert 'opts = [["*", "All counted modes"]]' in src                # unknown-mode demo matches included
+    assert "Green is better" not in src and "Blue is better, red is worse" in src
+    assert "Lighter = more matches" not in src and "Darker = more matches" in src
+
+
+def test_matches_clear_resets_mode():
+    # a hidden input's default follows its value, so form.reset() alone keeps the old mode
+    src = js("app.js")
+    i = src.index('form.addEventListener("reset", () => {')
+    assert 'form.elements.mode.value = "";' in src[i:i + 200]
+
+
+def test_dashboard_empty_state_points_to_the_right_pages():
+    src = js("dashboard.js")
+    assert ('Import your Steam match history in <a href="#settings">Settings</a>, '
+            'or add a demo on the <a href="#home">Home</a> page.') in src

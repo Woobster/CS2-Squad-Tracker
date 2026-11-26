@@ -3,6 +3,7 @@
 // The Rivals tab lives in rivals.js; it imports the shared helpers exported here.
 
 import { initRivals, renderRivals } from "/static/rivals.js";
+import { initDashboard, renderDashboard } from "/static/dashboard.js";
 import { advanceAfter, initWelcome, renderOnboarding, showWelcome, welcomeShown } from "/static/welcome.js";
 
 const GAP_WARNING = "You've played more than 8 matches since the last Update — older demos may be missing.";
@@ -689,6 +690,7 @@ function initMatches() {
     renderMatches();
   });
   form.addEventListener("reset", () => {
+    form.elements.mode.value = "";   // hidden input: reset() alone would keep the last mode
     pressMode("");
     if (!quietReset) setTimeout(() => renderMatches(), 0);
   });
@@ -2235,6 +2237,7 @@ const VIEWS = {
   matches: (arg) => renderMatches(arg),
   people: () => renderPeople(),
   stats: () => renderStats(),
+  dashboard: () => renderDashboard(),
   rivals: () => renderRivals(),
   summary: () => renderSummaryView(),
   settings: () => renderSettings(),
@@ -2274,6 +2277,7 @@ async function init() {
   initSummary();
   initSettings();
   initRivals();
+  initDashboard();
   initWelcome({
     onOwnerSet: async () => {
       await loadSettings().catch(() => {});
