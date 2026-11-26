@@ -558,3 +558,50 @@ ol.mates li { gap: 6px; }
 .welcome-candidates .row { flex-wrap: wrap; gap: 8px; }
 #owner-notice, #older-card, #onboarding-banner { margin-bottom: 12px; }
 #owner-notice p { display: flex; align-items: center; gap: 12px; justify-content: space-between; }
+
+/* ---------- Dashboard (v1.3.3): ported from a friend's page, in the app's colours ---------- */
+#view-dashboard {
+  --surface: var(--sand-hi); --surface2: var(--sand-lo); --ink2: var(--ink-2);
+  --grid: var(--line); --axis: var(--ink-2); --border: var(--line);
+  --s1: var(--ct); --s2: var(--t); --good: var(--ct); --warn: var(--t-deep);
+  --seq1: #dbe5f0; --seq2: #a9c1dc; --seq3: #6f97c3; --seq4: var(--ct); --seq5: var(--ct-deep);
+}
+#view-dashboard h1 small { display: block; font: 400 14px/1.3 var(--body); color: var(--ink-2); margin-top: 2px; }
+#view-dashboard .dash-filters { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+#view-dashboard .dash-filters label { display: flex; gap: 6px; align-items: center; color: var(--ink-2); font-size: 13px; }
+#view-dashboard #dash-f-roll { width: 64px; }
+#view-dashboard .dash-grid { display: grid; gap: 16px; grid-template-columns: repeat(12, 1fr); }
+#view-dashboard .card { background: var(--sand-hi); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; min-width: 0; }
+#view-dashboard .c12 { grid-column: span 12; } #view-dashboard .c8 { grid-column: span 8; }
+#view-dashboard .c6 { grid-column: span 6; } #view-dashboard .c4 { grid-column: span 4; }
+@media (max-width: 1000px) { #view-dashboard .c8, #view-dashboard .c6, #view-dashboard .c4 { grid-column: span 12; } }
+#view-dashboard h2 { font: 700 19px/1.2 var(--cond); margin: 0 0 4px; }
+#view-dashboard .sub { color: var(--ink-2); font-size: 13px; margin: 0 0 12px; }
+#view-dashboard .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+#view-dashboard .tile { background: var(--sand-lo); border-radius: 8px; padding: 10px 12px; }
+#view-dashboard .tile .lbl { color: var(--ink-2); font-size: 12.5px; }
+#view-dashboard .tile .val { font: 700 24px/1.15 var(--cond); font-variant-numeric: tabular-nums; margin-top: 2px; }
+#view-dashboard .tile .d { font-size: 12.5px; margin-top: 2px; font-variant-numeric: tabular-nums; }
+#view-dashboard .up { color: var(--ct); } #view-dashboard .down { color: var(--bad); } #view-dashboard .flat { color: var(--ink-2); }
+#view-dashboard table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+#view-dashboard th, #view-dashboard td { padding: 5px 8px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+#view-dashboard th { color: var(--ink-2); font-weight: 600; font-size: 12.5px; cursor: pointer; user-select: none; position: sticky; top: 0; background: var(--sand-hi); }
+#view-dashboard th:first-child, #view-dashboard td:first-child { text-align: left; }
+#view-dashboard td.name { max-width: 220px; overflow: hidden; text-overflow: ellipsis; }
+#view-dashboard td a { color: var(--ct-deep); }
+#view-dashboard .scroll { max-height: 420px; overflow: auto; }
+#view-dashboard .facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 8px 16px; margin: 0; padding: 0; list-style: none; }
+#view-dashboard .facts li { background: var(--sand-lo); border-radius: 8px; padding: 9px 12px; overflow: hidden; }
+#view-dashboard .facts b { display: block; font: 700 19px/1.25 var(--cond); font-variant-numeric: tabular-nums; overflow: hidden; text-overflow: ellipsis; }
+#view-dashboard .facts span { color: var(--ink-2); font-size: 13px; }
+#view-dashboard .chart { position: relative; }
+#view-dashboard .chart svg { display: block; width: 100%; overflow: visible; font-family: var(--body); }
+#view-dashboard .cmp td:first-child { color: var(--ink); }
+#view-dashboard .dres-W { color: var(--ct); font-weight: 600; } #view-dashboard .dres-L { color: var(--bad); font-weight: 600; }
+#view-dashboard .dres-T { color: var(--t-deep); font-weight: 600; }
+#view-dashboard .empty { color: var(--ink-2); padding: 40px; text-align: center; }
+#view-dashboard .heat { width: auto; }
+#view-dashboard .heat td { padding: 0; border: 2px solid var(--sand-hi); width: 30px; height: 22px; text-align: center; font-size: 11px; }
+#view-dashboard .heat th { position: static; font-size: 11.5px; padding: 2px 4px; }
+#view-dashboard details summary { cursor: pointer; color: var(--ink-2); font-size: 13px; margin-top: 8px; }
+#dash-tip { position: fixed; pointer-events: none; background: var(--ink); color: var(--sand); border-radius: 6px; padding: 6px 9px; font-size: 12.5px; z-index: 20; display: none; max-width: 280px; line-height: 1.4; }

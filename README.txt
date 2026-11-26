@@ -33,6 +33,21 @@ After that, the more you play with the tracker running, the more it
 knows: every new match is fetched and read automatically.
 
 
+WHAT'S NEW IN V1.3.3
+--------------------
+- New Dashboard tab: your own stats over all your matches, with trends,
+  maps, teammates, opponents, records and (from demos) ADR, rating and
+  more. It always shows the stats of whoever uses the app. Thanks to a
+  friend for the original page.
+- Only Competitive, Premier and FACEIT matches count now, everywhere:
+  Summary, awards, roasts, records, Stats, People, Rivals and Dashboard.
+  Wingman, Casual, Deathmatch and other modes are kept but ignored. A
+  demo whose mode isn't known yet counts if it was 5 against 5.
+- Matches tab: switch between All, Competitive and Premier.
+- Records are worked out again once when you upgrade, without the other
+  modes.
+
+
 WHAT'S NEW IN V1.3.2
 --------------------
 - Fixed: importing a saved Steam match history page always failed with

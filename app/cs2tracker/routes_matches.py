@@ -1,6 +1,7 @@
 """Match, session, summary and recurring-teammate routes."""
 from collections import defaultdict
 from datetime import date
+from typing import Literal
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -71,8 +72,12 @@ def build(ctx: Ctx) -> APIRouter:
 
     @r.get("/api/matches")
     def list_matches(since: date | None = None, until: date | None = None,
-                     group: int | None = None, map: str | None = None):
-        where, args = [], []
+                     group: int | None = None, map: str | None = None,
+                     mode: Literal["competitive", "premier"] | None = None):
+        where, args = [f"m.id IN ({db.COUNTED_SQL})"], []   # other modes never show
+        if mode:
+            where.append("COALESCE(m.game_mode, LOWER(TRIM(m.mode))) = ?")
+            args.append(mode)
         if since:
             where.append("substr(m.started_at,1,10) >= ?")
             args.append(since.isoformat())
