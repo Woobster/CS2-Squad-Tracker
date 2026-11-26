@@ -16,7 +16,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.concurrency import run_in_threadpool
 from pydantic import BaseModel, field_validator
 
-from cs2tracker import (db, history, importer, records, reparse, retention, rivals, routes_groups,
+from cs2tracker import (dashboard, db, history, importer, records, reparse, retention, rivals, routes_groups,
                         routes_matches, routes_people, owner, sharecode, steamid, steam_history, steam_paths, steam_sync)
 from cs2tracker.context import (NO_OWNER, STEAM_ID_RE, Ctx, NoOwner, default_boiler_cmd,
                                 owner_required)
@@ -26,7 +26,7 @@ from cs2tracker.funstats import FUN_FORMAT
 from cs2tracker.jobs import Job, JobRunner
 from cs2tracker.serialize import jsonable
 
-APP_VERSION = "1.3.2"
+APP_VERSION = "1.3.3"
 STATIC = Path(__file__).resolve().parent / "static"
 ALLOWED_SUFFIXES = (".dem", ".zip", ".gz", ".bz2")
 BUSY = "Busy importing — try again when the current job finishes."
@@ -276,6 +276,11 @@ def create_app(data_dir: Path, *, parse=parse_demo, boiler_cmd: list[str] | None
                 else:
                     db.set_setting(conn, "demo_retention_days", str(days))
         return read_settings()
+
+    @app.get("/api/dashboard", dependencies=[need_owner])
+    def dashboard_data():
+        with ctx.db() as conn:
+            return dashboard.build(conn, ctx.me(conn))
 
     @app.get("/api/rivals", dependencies=[need_owner])
     def rivals_list(min: int | None = None, tracked: int = 0):
